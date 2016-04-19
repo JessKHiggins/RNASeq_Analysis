@@ -5,49 +5,65 @@ library(dplyr)
 
 edge_results<- read.csv("EDGE_test.csv", header=TRUE)
 names(edge_results)
+edge_results$Seq_uname<- substr(edge_results$Seq_name,1,11)
 
 annotat<- read.csv("Msex_OGS2_Comp_Annotat_Vogel.csv")
+head(annotat)
+
+clean_annotat<- annotat %>% 
+  select(Name, Seq_Description, Hit_desc.,GOs,GO_Accession,Enzyme_Codes,InterProScan)
+
+clean_annotat$Seq_uname<- substr(clean_annotat$Name,1,11)
+
+
+names(clean_annotat)
+dim(clean_annotat)
+names(edge_results)
+dim(edge_results)
+
+joined<- right_join(edge_results,clean_annotat,"Seq_uname")
+names(joined)
 
 #Getting top 50 upregulated for each comparison of interest
-CNS_CHS_diff<- edge_results %>% 
+CNS_CHS_diff<- joined %>% 
   filter(EDGE_CNSvCHS_pvalue< 0.05) %>% 
-  select(Seq_name,Description,EDGE_CNSvCHS_pvalue,EDGE_CNSvCHS_Foldchange,EDGE_CNSvCHS_Weighted_diff) %>% 
+  select(Seq_uname,Seq_Description,EDGE_CNSvCHS_pvalue,EDGE_CNSvCHS_Foldchange,EDGE_CNSvCHS_Weighted_diff) %>% 
   arrange(desc(EDGE_CNSvCHS_Foldchange))
 
 head(CNS_CHS_diff)
 
 write.csv(top_n(CNS_CHS_diff,50, EDGE_CNSvCHS_Foldchange),"Top_50_CNSvCHS_up.csv")
 
-CHS_FHS_diff<- edge_results %>% 
+CHS_FHS_diff<- joined %>% 
   filter(EDGE_CHSvFHS_pvalue< 0.05) %>% 
-  select(Seq_name,Description,EDGE_CHSvFHS_pvalue,EDGE_CHSvFHS_Foldchange,EDGE_CHSvFHS_Weighted_diff) %>% 
+  select(Seq_uname,Seq_Description,EDGE_CHSvFHS_pvalue,EDGE_CHSvFHS_Foldchange,EDGE_CHSvFHS_Weighted_diff) %>% 
   arrange(desc(EDGE_CHSvFHS_Foldchange))
 
 head(CHS_FHS_diff)
 
 write.csv(top_n(CHS_FHS_diff,50,EDGE_CHSvFHS_Foldchange),"Top_50_CHSvFHS_up.csv")
 
-FNS_FHS_diff<- edge_results %>% 
+FNS_FHS_diff<- joined %>% 
   filter(EDGE_FNSvFHS_pvalue< 0.05) %>% 
-  select(Seq_name,Description,EDGE_FNSvFHS_pvalue,EDGE_FNSvFHS_Foldchange,EDGE_FNSvFHS_Weighted_diff) %>% 
+  select(Seq_uname,Seq_Description,EDGE_FNSvFHS_pvalue,EDGE_FNSvFHS_Foldchange,EDGE_FNSvFHS_Weighted_diff) %>% 
   arrange(desc(EDGE_FNSvFHS_Foldchange))
 
 head(FNS_FHS_diff)
 
 write.csv(top_n(FNS_FHS_diff,50,EDGE_FNSvFHS_Foldchange),"Top_50_FNSvFHS_up.csv")
 
-CNS_FNS_diff<- edge_results %>% 
+CNS_FNS_diff<- joined %>% 
   filter(EDGE_CNSvFNS_pvalue< 0.05) %>% 
-  select(Seq_name,Description,EDGE_CNSvFNS_pvalue,EDGE_CNSvFNS_Foldchange,EDGE_CNSvFNS_Weighted_diff) %>% 
+  select(Seq_uname,Seq_Description,EDGE_CNSvFNS_pvalue,EDGE_CNSvFNS_Foldchange,EDGE_CNSvFNS_Weighted_diff) %>% 
   arrange(desc(EDGE_CNSvFNS_Foldchange))
 
 head(CNS_FNS_diff)
 
 write.csv(top_n(CNS_FNS_diff,50,EDGE_CNSvFNS_Foldchange),"Top_50_CNSvFNS_up.csv")
 
-CNS_FHS_diff<- edge_results %>% 
+CNS_FHS_diff<- joined %>% 
   filter(EDGE_CNSvFHS_pvalue< 0.05) %>% 
-  select(Seq_name,Description,EDGE_CNSvFHS_pvalue,EDGE_CNSvFHS_Foldchange,EDGE_CNSvFHS_Weighted_diff) %>% 
+  select(Seq_uname,Seq_Description,EDGE_CNSvFHS_pvalue,EDGE_CNSvFHS_Foldchange,EDGE_CNSvFHS_Weighted_diff) %>% 
   arrange(desc(EDGE_CNSvFHS_Foldchange))
 
 head(CNS_FHS_diff)
