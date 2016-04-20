@@ -1,11 +1,16 @@
 #Analysis of Manudca RNASeq data from CLC genomics workbench, goal is to get some sort of gene name and do gene enrichment analyses.
 
+setwd("~/Google Drive/Kingsolver Lab- Post Doc/M_sexta_RNASeq_Analysis/data")
+
 library(ggplot2)
 library(dplyr)
 
-edge_results<- read.csv("EDGE_test.csv", header=TRUE)
-names(edge_results)
-edge_results$Seq_uname<- substr(edge_results$Seq_name,1,11)
+total_data<- read.csv("Msex_CLC_diff.csv", header=TRUE)
+names(total_data)
+
+#edge_results<- read.csv("EDGE_test.csv", header=TRUE)
+#names(edge_results)
+total_data$Seq_uname<- substr(total_data$Seq_name,1,11)
 
 annotat<- read.csv("Msex_OGS2_Comp_Annotat_Vogel.csv")
 head(annotat)
@@ -21,7 +26,7 @@ dim(clean_annotat)
 names(edge_results)
 dim(edge_results)
 
-joined<- right_join(edge_results,clean_annotat,"Seq_uname")
+joined<- right_join(total_data,clean_annotat,"Seq_uname")
 names(joined)
 
 #Getting top 50 upregulated for each comparison of interest
@@ -89,4 +94,26 @@ write.csv(head(downFNS_FHS,n=50),"Top_50_FNSvFHS_down.csv")
 
 downCHS_FHS<-arrange(CHS_FHS_diff, EDGE_CHSvFHS_Foldchange) 
 write.csv(head(downCHS_FHS,n=50),"Top_50_CHSvFHS_down.csv")
+
+
+#Figuring out how many are turned up vs. down
+
+CNS_CHS_diff %>% 
+  filter(EDGE_CNSvCHS_Foldchange>0) %>% 
+  count()
+
+FNS_FHS_diff %>% 
+  filter(EDGE_FNSvFHS_Foldchange<0) %>% 
+  count()
+
+CNS_FNS_diff %>% 
+  filter(EDGE_CNSvFNS_Foldchange<0) %>% 
+  count()
+
+CHS_FHS_diff %>% 
+  filter(EDGE_CHSvFHS_Foldchange<0) %>% 
+  count()
+
+#Read in CLC_diff and look at overall levels 
+#Means are total gene reads for each condition
 
