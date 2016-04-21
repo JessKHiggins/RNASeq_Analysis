@@ -117,3 +117,9 @@ CHS_FHS_diff %>%
 #Read in CLC_diff and look at overall levels 
 #Means are total gene reads for each condition
 
+means<- joined %>% 
+  select(Seq_uname,Seq_Description,CNS_Means,CHS_Means,FNS_Means,FHS_Means) 
+
+head(arrange(means,desc(CNS_Means)))
+  
+
