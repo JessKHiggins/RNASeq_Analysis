@@ -193,3 +193,30 @@ ggplot(melt_immune, aes(x=Condition, y=Means, color=Seq_Description))+
 ggplot(melt_hs, aes(x=Condition, y=Means, color=Seq_Description))+
   geom_point()+geom_line(aes(group=Seq_uname))
 
+#Getting gene names for each condition of interest for B2G Fisher's Exact test
+
+head(CNS_CHS_diff)
+
+CNS_CHS_list<- joined %>% 
+  filter(EDGE_CNSvCHS_pvalue< 0.05) %>% 
+  select(Seq_name)
+write.table(CNS_CHS_list, "CNS_CHS.txt", row.names=FALSE, quote=FALSE)
+
+FNS_FHS_list<- joined %>% 
+  filter(EDGE_FNSvFHS_pvalue< 0.05) %>% 
+  select(Seq_name)
+write.table(FNS_FHS_list, "FNS_FHS.txt", row.names=FALSE, quote=FALSE)
+
+CNS_FNS_list<- joined %>% 
+  filter(EDGE_CNSvFNS_pvalue< 0.05) %>% 
+  select(Seq_name)
+write.table(CNS_FNS_list, "CNS_FNS.txt", row.names=FALSE, quote=FALSE)
+
+CHS_FHS_list<- joined %>% 
+  filter(EDGE_CHSvFHS_pvalue< 0.05) %>% 
+  select(Seq_name)
+write.table(CHS_FHS_list, "CHS_FHS.txt", row.names=FALSE, quote=FALSE)
+
+Total_list<- joined %>% 
+  select(Seq_name)
+write.table(Total_list, "Total_list.txt", row.names=FALSE, quote=FALSE)
